@@ -51,8 +51,9 @@ _BFQ_enable_="y"
 
 pkgname=(linux-ck linux-ck-headers)
 _kernelname=-ck
-_srcname=linux-4.5
-pkgver=4.5.6
+pkgver=4.6.2
+_major=${pkgver%.*}
+_srcname=linux-${_major}
 pkgrel=1
 arch=('i686' 'x86_64')
 url="https://wiki.archlinux.org/index.php/Linux-ck"
@@ -60,7 +61,7 @@ license=('GPL2')
 makedepends=('kmod' 'inetutils' 'bc')
 options=('!strip')
 _ckpatchversion=1
-_ckpatchname="patch-4.5-ck${_ckpatchversion}"
+_ckpatchname="patch-${_major}-ck${_ckpatchversion}"
 _gcc_patch="enable_additional_cpu_optimizations_for_gcc_v4.9+_kernel_v3.15+.patch"
 _bfqpath="http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.5.0-v7r11"
 source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
@@ -71,22 +72,22 @@ source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
 'linux-ck.preset'
 'change-default-console-loglevel.patch'
 # ck1
-"http://ck.kolivas.org/patches/4.0/4.5/4.5-ck${_ckpatchversion}/${_ckpatchname}.xz"
+"http://ck.kolivas.org/patches/4.0/${_major}/${_major}-ck${_ckpatchversion}/${_ckpatchname}.xz"
 # gcc
 "http://repo-ck.com/source/gcc_patch/${_gcc_patch}.gz"
 # bfq
 "${_bfqpath}/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.5.0.patch"
 "${_bfqpath}/0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.5.0.patch"
 "${_bfqpath}/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r11-for.patch")
-sha256sums=('a40defb401e01b37d6b8c8ad5c1bbab665be6ac6310cdeed59950c96b31a519c'
+sha256sums=('a93771cd5a8ad27798f22e9240538dfea48d3a2bf2a6a6ab415de3f02d25d866'
             'SKIP'
-            'b178f252af7459cfa6be435620f932e4ac99f7542b195ccdf34051db31e313ba'
+            '0dc509a19c68ab547a62158bf2017965b843854b63be46ae039c37724dccca21'
             'SKIP'
             '7df3d420abbaac2268f3c5baac0b5eaf0cf12cec5051389a20f0eca7e1814a75'
             '293c8814a3ec1e6d66b509c0a4896fe9a76fd0b4d639e476857720c54b02d266'
             '2b3ebf5446aa3cac279842ca00bc1f2d6b7ff1766915282c201d763dbf6ca07e'
             '1256b241cd477b265a3c2d64bdc19ffe3c9bbcee82ea3994c590c2c76e767d99'
-            '582faf80f7ee1e6d9844c598893101d0cf941afa92fc2981e909f1382a36710a'
+            '4475edebbcac102e5d92921970c12b22482c08069cc1478a7c922453611e0871'
             'cf0f984ebfbb8ca8ffee1a12fd791437064b9ebe0712d6f813fd5681d4840791'
             '5d19ecb91320a64f0abb6c8e70205fef848ada967093faa94e4c0c39c340d0c8'
             '9c1e11772ff29d37dacc9246f63e24d5154eb61682ba2b7e175a9ccbdc7116e1'
@@ -116,7 +117,7 @@ prepare() {
 	# Patch source to enable more gcc CPU optimizatons via the make nconfig
 	msg "Patching source with gcc patch to enable more cpus types"
 	patch -Np1 -i "${srcdir}/${_gcc_patch}"
-	
+
 	msg "Patching source with BFQ patches"
 	for p in $(ls ${srcdir}/000{1,2,3}-block*.patch); do
 		patch -Np1 -i "$p"
@@ -140,7 +141,7 @@ prepare() {
 			-i -e 's/^# CONFIG_HZ_1000 is not set/CONFIG_HZ_1000=y/' \
 			-i -e 's/^CONFIG_HZ=300/CONFIG_HZ=1000/' .config
 	fi
-	
+
 	### Do not disable NUMA until CK figures out why doing so causes panics for
 	### some users!
 
