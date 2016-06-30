@@ -122,7 +122,7 @@ prepare() {
 	# Patch source to enable more gcc CPU optimizatons via the make nconfig
 	msg "Patching source with gcc patch to enable more cpus types"
 	patch -Np1 -i "${srcdir}/${_gcc_patch}"
-	
+
 	msg "Patching source with BFQ patches"
 	for p in $(ls ${srcdir}/000{1,2,3}-block*.patch); do
 		patch -Np1 -i "$p"
@@ -146,7 +146,7 @@ prepare() {
 			-i -e 's/^# CONFIG_HZ_1000 is not set/CONFIG_HZ_1000=y/' \
 			-i -e 's/^CONFIG_HZ=300/CONFIG_HZ=1000/' .config
 	fi
-	
+
 	### Do not disable NUMA until CK figures out why doing so causes panics for
 	### some users!
 
