@@ -51,31 +51,31 @@ _BFQ_enable_=y
 
 pkgname=(linux-ck linux-ck-headers)
 _kernelname=-ck
-_srcname=linux-4.6
-pkgver=4.6.5
-pkgrel=2
+_srcname=linux-4.7
+pkgver=4.7.0
+pkgrel=1
 arch=('i686' 'x86_64')
 url="https://wiki.archlinux.org/index.php/Linux-ck"
 license=('GPL2')
 makedepends=('kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
 _ckpatchversion=1
-_ckpatchname="patch-4.6-ck${_ckpatchversion}"
+_ckpatchname="patch-4.7-ck${_ckpatchversion}"
 _gcc_patch='enable_additional_cpu_optimizations_for_gcc_v4.9+_kernel_v3.15+.patch'
-_bfqpath='http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.6.0-v8'
-_bfqp1='0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.6.0.patch'
-_bfqp2='0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.6.0.patch'
+_bfqpath='http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.7.0-v8'
+_bfqp1='0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.7.0.patch'
+_bfqp2='0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.7.0.patch'
 _bfqp3='0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r11-for.patch'
 _bfqp4='0004-blkck-bfq-turn-BFQ-v7r11-for-4.7.0-into-BFQ-v8-for-4.patch'
 source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
 "https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.sign"
-"http://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
-"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
+#"http://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
+#"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
 'config.x86_64' 'config'
 'linux-ck.preset'
 'change-default-console-loglevel.patch'
 # ck1
-"http://ck.kolivas.org/patches/4.0/4.6/4.6-ck${_ckpatchversion}/${_ckpatchname}.xz"
+"http://ck.kolivas.org/patches/4.0/4.7/4.7-ck${_ckpatchversion}/${_ckpatchname}.xz"
 # gcc
 "http://repo-ck.com/source/gcc_patch/${_gcc_patch}.gz"
 # bfq
@@ -83,18 +83,16 @@ source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
 "$_bfqpath/$_bfqp2"
 "$_bfqpath/$_bfqp3"
 "$_bfqpath/$_bfqp4")
-sha256sums=('a93771cd5a8ad27798f22e9240538dfea48d3a2bf2a6a6ab415de3f02d25d866'
-            'SKIP'
-            '857df33f085a0116b9d2322ffe3b23d5b7d8c4898427d79f68108a653e84910c'
+sha256sums=('5190c3d1209aeda04168145bf50569dc0984f80467159b1dc50ad731e3285f10'
             'SKIP'
             '8fea5fed21eabd29befb70fc0f1eea6d92c6a4d9c16b039229b0b6b9322fe8ee'
             'a1d7dc1d00baf54b623806dd5adc203ed2d215552b8f5f954f08f5bf47af3626'
             '2b3ebf5446aa3cac279842ca00bc1f2d6b7ff1766915282c201d763dbf6ca07e'
             '1256b241cd477b265a3c2d64bdc19ffe3c9bbcee82ea3994c590c2c76e767d99'
-            '4475edebbcac102e5d92921970c12b22482c08069cc1478a7c922453611e0871'
+            'e8d70729a7a58bac904d9a7a52ae4d46feec671afa307e6814895d74daf5ffbc'
             'cf0f984ebfbb8ca8ffee1a12fd791437064b9ebe0712d6f813fd5681d4840791'
-            '1857e05fd79baffc04dd075be81257d0a43351c244b7f360b48408a28ecfde2d'
-            '595887ea141ee7373460d325368f362ca87695259b9bca3499f12ef76322172b'
+            '1e16d406dc5b58d61198566281dbfea781fae78af0ed839ab3950255fa56aa78'
+            '391b1cb6b423c427fc46fb491f85d544e4756795833c6fb2553ddad6dc658d93'
             'd90d5525e3b4fefbd218e04b09c2234700226ecd8a350e8d88a3145c02b82c18'
             '411e6f7aacc24d869f8b697e514bcbe1bb8ac676a73710269d4f8b516ce0b971')
 validpgpkeys=(
