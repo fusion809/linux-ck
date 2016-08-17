@@ -52,7 +52,7 @@ _BFQ_enable_=y
 pkgname=(linux-ck linux-ck-headers)
 _kernelname=-ck
 _srcname=linux-4.7
-pkgver=4.7.0
+pkgver=4.7.1
 pkgrel=1
 arch=('i686' 'x86_64')
 url="https://wiki.archlinux.org/index.php/Linux-ck"
@@ -62,15 +62,15 @@ options=('!strip')
 _ckpatchversion=1
 _ckpatchname="patch-4.7-ck${_ckpatchversion}"
 _gcc_patch='enable_additional_cpu_optimizations_for_gcc_v4.9+_kernel_v3.15+.patch'
-_bfqpath='http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.7.0-v8'
+_bfqpath='http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.7.0-v8r2'
 _bfqp1='0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r11-4.7.0.patch'
 _bfqp2='0002-block-introduce-the-BFQ-v7r11-I-O-sched-for-4.7.0.patch'
 _bfqp3='0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r11-for.patch'
-_bfqp4='0004-blkck-bfq-turn-BFQ-v7r11-for-4.7.0-into-BFQ-v8-for-4.patch'
+_bfqp4='0004-block-bfq-turn-BFQ-v7r11-for-4.7.0-into-BFQ-v8r2-for.patch'
 source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
 "https://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.sign"
-#"http://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
-#"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
+"http://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.xz"
+"https://www.kernel.org/pub/linux/kernel/v4.x/patch-${pkgver}.sign"
 'config.x86_64' 'config'
 'linux-ck.preset'
 'change-default-console-loglevel.patch'
@@ -85,8 +85,10 @@ source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
 "$_bfqpath/$_bfqp4")
 sha256sums=('5190c3d1209aeda04168145bf50569dc0984f80467159b1dc50ad731e3285f10'
             'SKIP'
-            '8fea5fed21eabd29befb70fc0f1eea6d92c6a4d9c16b039229b0b6b9322fe8ee'
-            'a1d7dc1d00baf54b623806dd5adc203ed2d215552b8f5f954f08f5bf47af3626'
+            '838fa595436fbf9f70759aa43c1cacd83cc0adc95d166648c1625ebd50fad04e'
+            'SKIP'
+            '049fd48a4cf1d26ec243d861f23f9e5113bf37816ea1a985008164198929989e'
+            'cf843f5f58d826206d6311a680f38554eddc5ff81b8f308b3e7da1419b962a5b'
             '2b3ebf5446aa3cac279842ca00bc1f2d6b7ff1766915282c201d763dbf6ca07e'
             '1256b241cd477b265a3c2d64bdc19ffe3c9bbcee82ea3994c590c2c76e767d99'
             'e8d70729a7a58bac904d9a7a52ae4d46feec671afa307e6814895d74daf5ffbc'
@@ -94,7 +96,7 @@ sha256sums=('5190c3d1209aeda04168145bf50569dc0984f80467159b1dc50ad731e3285f10'
             '1e16d406dc5b58d61198566281dbfea781fae78af0ed839ab3950255fa56aa78'
             '391b1cb6b423c427fc46fb491f85d544e4756795833c6fb2553ddad6dc658d93'
             'd90d5525e3b4fefbd218e04b09c2234700226ecd8a350e8d88a3145c02b82c18'
-            '411e6f7aacc24d869f8b697e514bcbe1bb8ac676a73710269d4f8b516ce0b971')
+            '9620022c602f60e666ae0faa65ad33d52024219895ad1aef06701cce4d9492aa')
 validpgpkeys=(
               'ABAF11C65A2970B130ABE3C479BE3E4300411886' # Linus Torvalds
               '647F28654894E3BD457199BE38DBBDC86092693E' # Greg Kroah-Hartman
@@ -104,7 +106,7 @@ prepare() {
 	cd "${_srcname}"
 
 	# add upstream patch
-	#patch -p1 -i "${srcdir}/patch-${pkgver}"
+	patch -p1 -i "${srcdir}/patch-${pkgver}"
 
 	# set DEFAULT_CONSOLE_LOGLEVEL to 4 (same value as the 'quiet' kernel param)
 	# remove this when a Kconfig knob is made available by upstream
@@ -114,7 +116,7 @@ prepare() {
 	# patch source with ck patchset with BFS
 	# fix double name in EXTRAVERSION
 	sed -i -re "s/^(.EXTRAVERSION).*$/\1 = /" "${srcdir}/${_ckpatchname}"
-	msg "Patching source with ck1 including BFS v0.470"
+	msg "Patching source with ck1 including BFS v0.472"
 	patch -Np1 -i "${srcdir}/${_ckpatchname}"
 
 	# Patch source to enable more gcc CPU optimizatons via the make nconfig
@@ -239,8 +241,8 @@ build() {
 }
 
 package_linux-ck() {
-	pkgdesc='Linux Kernel with the ck1 patchset featuring the Brain Fuck Scheduler v0.470.'
-	#_Kpkgdesc='Linux Kernel and modules with the ck1 patchset featuring the Brain Fuck Scheduler v0.470.'
+	pkgdesc='Linux Kernel with the ck1 patchset featuring the Brain Fuck Scheduler v0.472.'
+	#_Kpkgdesc='Linux Kernel and modules with the ck1 patchset featuring the Brain Fuck Scheduler v0.472.'
 	#pkgdesc="${_Kpkgdesc}"
 	depends=('coreutils' 'linux-firmware' 'mkinitcpio>=0.7')
 	optdepends=('crda: to set the correct wireless channels of your country' 'nvidia-ck: nVidia drivers for linux-ck' 'modprobed-db: Keeps track of EVERY kernel module that has ever been probed - useful for those of us who make localmodconfig')
