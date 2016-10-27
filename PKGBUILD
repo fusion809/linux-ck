@@ -34,7 +34,7 @@ _localmodcfg=
 # Set this if you want it enabled globally i.e. for all devices in your system
 # If you want it enabled on a device-by-device basis, leave this unset and see:
 # https://wiki.archlinux.org/index.php/Linux-ck#How_to_Enable_the_BFQ_I.2FO_Scheduler
-_BFQ_enable_=y
+_BFQ_enable_=
 
 # Use the current kernel's .config file
 # Enabling this option will use the .config of the RUNNING kernel rather than
@@ -49,13 +49,13 @@ pkgname=(linux-ck linux-ck-headers)
 _kernelname=-ck
 _srcname=linux-4.8
 pkgver=4.8.4
-pkgrel=1
+pkgrel=4
+_ckpatchversion=4
 arch=('i686' 'x86_64')
 url="https://wiki.archlinux.org/index.php/Linux-ck"
 license=('GPL2')
 makedepends=('kmod' 'inetutils' 'bc' 'libelf')
 options=('!strip')
-_ckpatchversion=3
 _ckpatchname="patch-4.8-ck${_ckpatchversion}"
 _gcc_patch='enable_additional_cpu_optimizations_for_gcc_v4.9+_kernel_v3.15+.patch'
 source=("http://www.kernel.org/pub/linux/kernel/v4.x/${_srcname}.tar.xz"
@@ -71,7 +71,7 @@ sha256sums=('3e9150065f193d3d94bcf46a1fe9f033c7ef7122ab71d75a7fb5a2f0c9a7e11a'
             'SKIP'
             '86e246b19253ee3aa971403a5990376a5e33667122f7c8742cc0ee807f204403'
             'SKIP'
-            'dc1a5562a20136e58a533b6f3937b993c4b5ed6d6b89988329c86538507f0503'
+            '10f995dcef7802bc1d15f530a54d92832f269154ac40b994e3a84a5a218e511c'
             'cf0f984ebfbb8ca8ffee1a12fd791437064b9ebe0712d6f813fd5681d4840791'
             '1db84d68a6fc570d2006e36cb958a8c913823d9d37db4944a0fc5148266eb868'
             '5a2f4f61b6e529e2726bc20c33f31edf4d90500af1a30ade51dd48be270f49c8'
@@ -93,6 +93,9 @@ prepare() {
 	# (relevant patch sent upstream: https://lkml.org/lkml/2011/7/26/227)
 	patch -p1 -i "${srcdir}/change-default-console-loglevel.patch"
 
+	# fix naming schema in EXTRAVERSION
+	sed -i -re "s/^(.EXTRAVERSION).*$/\1 = /" "${srcdir}/${_ckpatchname}"
+
 	msg "Patching source with ck patchset"
 	patch -Np1 -i "${srcdir}/${_ckpatchname}"
 
@@ -109,14 +112,14 @@ prepare() {
 	else
 		cat "${srcdir}/config" > ./.config
 	fi
-
+	
 	if [ -n "$_1k_HZ_ticks" ]; then
 		msg "Setting tick rate to 1000 Hz..."
 		sed -i -e 's/^CONFIG_HZ_300=y/# CONFIG_HZ_300 is not set/' \
 			-i -e 's/^# CONFIG_HZ_1000 is not set/CONFIG_HZ_1000=y/' \
 			-i -e 's/^CONFIG_HZ=300/CONFIG_HZ=1000/' .config
 	fi
-
+	
 	if [ -n "$_NUMAdisable" ]; then
 		if [ "${CARCH}" = "x86_64" ]; then
 			msg "Disabling NUMA from kernel config..."
@@ -205,8 +208,8 @@ build() {
 }
 
 package_linux-ck() {
-	pkgdesc='Linux Kernel with the ck3 patchset featuring MuQSS CPU scheduler v0.115'
-	#_Kpkgdesc='Linux Kernel and modules with the ck3 patchset featuring MuQSS CPU scheduler v0.115'
+	pkgdesc='Linux Kernel with the ck4 patchset featuring MuQSS CPU scheduler v0.116'
+	#_Kpkgdesc='Linux Kernel and modules with the ck4 patchset featuring MuQSS CPU scheduler v0.116'
 	#pkgdesc="${_Kpkgdesc}"
 	depends=('coreutils' 'linux-firmware' 'mkinitcpio>=0.7')
 	optdepends=('crda: to set the correct wireless channels of your country' 'nvidia-ck: nVidia drivers for linux-ck' 'modprobed-db: Keeps track of EVERY kernel module that has ever been probed - useful for those of us who make localmodconfig')
